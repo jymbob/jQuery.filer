@@ -2,7 +2,7 @@
  * jQuery.filer
  * Copyright (c) 2015 CreativeDream
  * Website: https://github.com/CreativeDream/jquery.filer
- * Version: 1.0.4 (03-Nov-2015)
+ * Version: 1.0.5 (19-Nov-2015)
  * Requires: jQuery v1.7.1 or later
  */
 (function($) {
@@ -15,10 +15,12 @@
 				o = $(),
 				l = $(),
 				sl = [],
-				n = $.extend(true, {}, $.fn.filer.defaults, q),
+				n_f = $.isFunction(q) ? q(s, $.fn.filer.defaults) : q,
+				n = n_f && $.isPlainObject(n_f) ? $.extend(true, {}, $.fn.filer.defaults, n_f) : $.fn.filer.defaults,
 				f = {
 					init: function() {
 						s.wrap('<div class="jFiler"></div>');
+						f._set('props');
 						s.prop("jFiler").boxEl = p = s.closest(b);
 						f._changeInput();
 					},
@@ -57,7 +59,7 @@
 						s.click()
 					},
 					_applyAttrSettings: function() {
-						var d = ["name", "limit", "maxSize", "extensions", "changeInput", "showThumbs", "appendTo", "theme", "addMore", "excludeName", "files", "options"];
+						var d = ["name", "limit", "maxSize", "extensions", "changeInput", "showThumbs", "appendTo", "theme", "addMore", "excludeName", "files", "uploadUrl", "uploadData", "options"];
 						for(var k in d) {
 							var j = "data-jfiler-" + d[k];
 							if(f._assets.hasAttr(j)) {
@@ -71,6 +73,12 @@
 										n[d[k]] = s.attr(j)
 											.replace(/ /g, '')
 											.split(",");
+										break;
+									case "uploadUrl":
+										if(n.uploadFile) n.uploadFile.url = s.attr(j);
+										break;
+									case "uploadData":
+										if(n.uploadFile) n.uploadFile.data = JSON.parse(s.attr(j));
 										break;
 									case "files":
 									case "options":
@@ -169,6 +177,7 @@
 						f._itFl = [];
 						f._itFc = null;
 						f._ajFc = 0;
+						f._set('props');
 						s.prop("jFiler")
 							.files_list = f._itFl;
 						s.prop("jFiler")
@@ -195,6 +204,41 @@
 										.html(value);
 								}
 								break;
+							case 'props':
+								if(!s.prop("jFiler")){
+									s.prop("jFiler", {
+										options: n,
+										listEl: l,
+										boxEl: p,
+										newInputEl: o,
+										inputEl: s,
+										files: f.files,
+										files_list: f._itFl,
+										current_file: f._itFc,
+										append: function(data) {
+											return f._append(false, {
+												files: [data]
+											});
+										},
+										remove: function(id) {
+											f._remove(null, {
+												binded: true,
+												data: {
+													id: id
+												}
+											});
+											return true;
+										},
+										reset: function() {
+											f._reset();
+											f._clear();
+											return true;
+										},
+										retry: function(data) {
+											return f._retryUpload(data);
+										}
+									})	
+								}
 						}
 					},
 					_filesCheck: function() {
@@ -509,11 +553,10 @@
 						drop: function(e) {
 							e.preventDefault();
 							p.removeClass('dragged');
-							if(!e.originalEvent.dataTransfer.files || e.originalEvent.dataTransfer.files.length <= 0) {
-								return;
-							}
 							f._set('feedback', n.captions.feedback);
-							f._onChange(e, e.originalEvent.dataTransfer.files);
+							if(e && e.originalEvent && e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files && e.originalEvent.dataTransfer.files.length > 0) {
+								f._onChange(e, e.originalEvent.dataTransfer.files);
+							}
 							n.dragDrop.drop != null && typeof n.dragDrop.drop == "function" ? n.dragDrop.drop(e.originalEvent.dataTransfer.files, e, o, s, p) : null;
 						},
 						_dragLeaveCheck: function(e) {
@@ -650,6 +693,7 @@
 							sl.push(elem);
 							s = elem;
 							f._bindInput();
+							f._set('props');
 						}
 					},
 					_append: function(e, data) {
@@ -872,38 +916,8 @@
 					_ajFc: 0,
 					_prEr: false
 				}
-			s.prop("jFiler", {
-				options: n,
-				listEl: l,
-				boxEl: p,
-				newInputEl: o,
-				inputEl: s,
-				files: f.files,
-				files_list: f._itFl,
-				current_file: f._itFc,
-				append: function(data) {
-					return f._append(false, {
-						files: [data]
-					});
-				},
-				remove: function(id) {
-					f._remove(null, {
-						binded: true,
-						data: {
-							id: id
-						}
-					});
-					return true;
-				},
-				reset: function() {
-					f._reset();
-					f._clear();
-					return true;
-				},
-				retry: function(data) {
-					return f._retryUpload(data);
-				}
-			}).on("filer.append", function(e, data) {
+			
+			s.on("filer.append", function(e, data) {
 				f._append(e, data)
 			}).on("filer.remove", function(e, data) {
 				data.binded = true;
@@ -917,7 +931,9 @@
 			}).on("filer.retry", function(e, data) {
 				return f._retryUpload(e, data)
 			});
+			
 			f.init();
+			
 			return this;
 		});
 	};

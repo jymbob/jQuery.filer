@@ -1,6 +1,6 @@
 {
   "name": "jquery.filer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "js/jquery.filer.min.js",
   "ignore": [
     "**/.*",
