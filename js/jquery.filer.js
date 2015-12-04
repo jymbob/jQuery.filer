@@ -264,7 +264,7 @@
 								return false;
 								break
 							}
-							if(n.maxSize != null && f.files[t].size > n.maxSize * 1048576) {
+							if((n.maxSize != null && f.files[t].size > n.maxSize * 1048576) || (n.fileMaxSize != null && f.files[t].size > n.fileMaxSize * 1048576)) {
 								alert(f._assets.textParse(n.captions.errors.filesSize, m));
 								return false;
 								break
@@ -940,6 +940,7 @@
 	$.fn.filer.defaults = {
 		limit: null,
 		maxSize: null,
+        fileMaxSize: null,
 		extensions: null,
 		changeInput: true,
 		showThumbs: false,
@@ -983,7 +984,7 @@
 			errors: {
 				filesLimit: "Only {{fi-limit}} files are allowed to be uploaded.",
 				filesType: "Only Images are allowed to be uploaded.",
-				filesSize: "{{fi-name}} is too large! Please upload file up to {{fi-maxSize}} MB.",
+				filesSize: "{{fi-name}} is too large! Please upload file up to {{fi-fileMaxSize}} MB.",
 				filesSizeAll: "Files you've choosed are too large! Please upload files up to {{fi-maxSize}} MB."
 			}
 		}
