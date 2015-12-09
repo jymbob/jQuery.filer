@@ -47,7 +47,7 @@ Follow <a href="http://twitter.com/increativedream">@creativedream</a> for the l
 
 <b>Make a donation</b> - jQuery.filer is free and open source and your donations will help us to develop it. You can support our project by donating with PayPal. All contributions, small or great, are very much appreciated. Thank you!
 <br><br>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WFVGJ66RW22GJ" target="_blank"><img src="http://grandesign.md/__cr/1445905675_paypal-curved.png"></a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WFVGJ66RW22GJ" target="_blank"><img src="http://filer.grandesign.md/images/icons/1445905675_paypal-curved.png"></a>
 
 PHP File Uploader
 -------
