@@ -2,7 +2,7 @@
  * jQuery.filer
  * Copyright (c) 2015 CreativeDream
  * Website: https://github.com/CreativeDream/jquery.filer
- * Version: 1.0.5 (19-Nov-2015)
+ * Version: 1.0.6 (20-Jul-2016) - Edited by @jymbob
  * Requires: jQuery v1.7.1 or later
  */
 (function($) {
@@ -560,17 +560,19 @@
 							n.dragDrop.drop != null && typeof n.dragDrop.drop == "function" ? n.dragDrop.drop(e.originalEvent.dataTransfer.files, e, o, s, p) : null;
 						},
 						_dragLeaveCheck: function(e) {
-							var related = e.relatedTarget,
+							var related = $(e.target),
 								inside = false;
 							if(related !== o) {
 								if(related) {
-									inside = $.contains(o, related);
+									inside = $(o).find(related).length;
 								}
-								if(inside) {
+								if(inside > 0) {
 									return false;
+								} else {
+									return true;
 								}
 							}
-							return true;
+							return false;
 						}
 					},
 					_clipboardPaste: function(e, fromDrop) {
